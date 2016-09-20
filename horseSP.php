@@ -109,6 +109,30 @@ class Square
 
         return $jumps;
     }
+
+    public function getPossibleJumpsIndexes2()
+    {
+        foreach (range(0, 7) as $index) $positions[$index] = new stdClass();
+        foreach ([["columnIndex", "rowIndex"], ["rowIndex", "columnIndex"]] as $indexes) {
+            $counter = 0;
+            foreach ([2,1] as $val) {
+                $positions[$counter++]->{$indexes[0]} = $this->{$indexes[0]} + $val; 
+                $positions[$counter++]->{$indexes[0]} = $this->{$indexes[0]} - $val; 
+                $positions[$counter++]->{$indexes[1]} = $this->{$indexes[1]} + $val; 
+                $positions[$counter++]->{$indexes[1]} = $this->{$indexes[1]} - $val; 
+            }
+        }
+
+        foreach ($positions as $position) {
+            print_r($position);
+            if ($position->columnIndex < 1 || $position->columnIndex > COLUMNS
+                || $position->rowIndex < 1 || $position->rowIndex > ROWS) {
+                continue;
+            }
+            $jumps[] = (ROWS - $position->rowIndex) * COLUMNS + $position->columnIndex;
+        }
+        print_r($jumps);
+    }
 }
 
 class PathFinder
@@ -186,6 +210,9 @@ class PathFinder
     private function getJumps(array $positions)
     {
         foreach ($positions as $position) {
+            print_r($position->getPossibleJumpsIndexes());
+            print_r($position->getPossibleJumpsIndexes2());
+            die;
             foreach ($position->getPossibleJumpsIndexes() as $boardIndex) {
                 /** @var Square */
                 $jumpedSquare = $this->board[$boardIndex];

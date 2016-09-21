@@ -110,28 +110,28 @@ class Square
         return $jumps;
     }
 
-    public function getPossibleJumpsIndexes2()
+    public function getPossibleJumpsIndexesTricky()
     {
         foreach (range(0, 7) as $index) $positions[$index] = new stdClass();
+
+        // generates all possible jumps
+        $counter = 0;
         foreach ([["columnIndex", "rowIndex"], ["rowIndex", "columnIndex"]] as $indexes) {
-            $counter = 0;
-            foreach ([2,1] as $val) {
-                $positions[$counter++]->{$indexes[0]} = $this->{$indexes[0]} + $val; 
-                $positions[$counter++]->{$indexes[0]} = $this->{$indexes[0]} - $val; 
-                $positions[$counter++]->{$indexes[1]} = $this->{$indexes[1]} + $val; 
-                $positions[$counter++]->{$indexes[1]} = $this->{$indexes[1]} - $val; 
+            foreach ([[2, 1], [2, -1], [-2, 1], [-2, -1]] as $jumpValues) {
+                $positions[$counter]->{$indexes[0]} = $this->{$indexes[0]} + $jumpValues[0];
+                $positions[$counter++]->{$indexes[1]} = $this->{$indexes[1]} + $jumpValues[1];
             }
         }
 
+        // filter jumps outside the chess board, calculates board offset for existing one
         foreach ($positions as $position) {
-            print_r($position);
             if ($position->columnIndex < 1 || $position->columnIndex > COLUMNS
                 || $position->rowIndex < 1 || $position->rowIndex > ROWS) {
                 continue;
             }
-            $jumps[] = (ROWS - $position->rowIndex) * COLUMNS + $position->columnIndex;
+            $jumps[] = (ROWS - $position->rowIndex) * COLUMNS + $position->columnIndex - 1;
         }
-        print_r($jumps);
+        return $jumps;
     }
 }
 
@@ -210,10 +210,7 @@ class PathFinder
     private function getJumps(array $positions)
     {
         foreach ($positions as $position) {
-            print_r($position->getPossibleJumpsIndexes());
-            print_r($position->getPossibleJumpsIndexes2());
-            die;
-            foreach ($position->getPossibleJumpsIndexes() as $boardIndex) {
+            foreach ($position->getPossibleJumpsIndexesTricky() as $boardIndex) {
                 /** @var Square */
                 $jumpedSquare = $this->board[$boardIndex];
                 if ($jumpedSquare->from || $jumpedSquare === $this->start) {

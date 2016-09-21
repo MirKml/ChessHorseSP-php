@@ -114,7 +114,7 @@ class Square
     {
         foreach (range(0, 7) as $index) $positions[$index] = new stdClass();
 
-        // generates all possible jumps
+        // generates all jumps, possible and impossible
         $counter = 0;
         foreach ([["columnIndex", "rowIndex"], ["rowIndex", "columnIndex"]] as $indexes) {
             foreach ([[2, 1], [2, -1], [-2, 1], [-2, -1]] as $jumpValues) {

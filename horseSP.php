@@ -112,14 +112,13 @@ class Square
 
     public function getPossibleJumpsIndexesTricky()
     {
-        foreach (range(0, 7) as $index) $positions[$index] = new stdClass();
-
         // generates all jumps, possible and impossible
-        $counter = 0;
         foreach ([["columnIndex", "rowIndex"], ["rowIndex", "columnIndex"]] as $indexes) {
             foreach ([[2, 1], [2, -1], [-2, 1], [-2, -1]] as $jumpValues) {
-                $positions[$counter]->{$indexes[0]} = $this->{$indexes[0]} + $jumpValues[0];
-                $positions[$counter++]->{$indexes[1]} = $this->{$indexes[1]} + $jumpValues[1];
+                $position = new \stdClass();
+                $position->{$indexes[0]} = $this->{$indexes[0]} + $jumpValues[0];
+                $position->{$indexes[1]} = $this->{$indexes[1]} + $jumpValues[1];
+                $positions[] = $position;
             }
         }
 
